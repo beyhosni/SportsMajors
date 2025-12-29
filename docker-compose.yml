@@ -1,0 +1,107 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sportsmajors-db
+    environment:
+      POSTGRES_DB: sportsmajors
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: sportsmajors-redis
+    ports:
+      - "6379:6379"
+
+  localstack:
+    image: localstack/localstack
+    container_name: sportsmajors-s3
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - identity-service
+      - candidate-service
+      - employer-service
+      - job-service
+      - application-service
+      - document-service
+
+  identity-service:
+    build:
+      context: ./backend
+      dockerfile: identity-service/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sportsmajors
+    depends_on:
+      - postgres
+
+  candidate-service:
+    build:
+      context: ./backend
+      dockerfile: candidate-service/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sportsmajors
+    depends_on:
+      - postgres
+
+  employer-service:
+    build:
+      context: ./backend
+      dockerfile: employer-service/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sportsmajors
+    depends_on:
+      - postgres
+
+  job-service:
+    build:
+      context: ./backend
+      dockerfile: job-service/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sportsmajors
+    depends_on:
+      - postgres
+
+  application-service:
+    build:
+      context: ./backend
+      dockerfile: application-service/Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sportsmajors
+    depends_on:
+      - postgres
+
+  document-service:
+    build:
+      context: ./backend
+      dockerfile: document-service/Dockerfile
+    environment:
+      S3_ENDPOINT: http://localstack:4566
+    depends_on:
+      - localstack
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
+
+volumes:
+  postgres_data:

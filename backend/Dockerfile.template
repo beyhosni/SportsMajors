@@ -1,0 +1,23 @@
+FROM maven:3.8.4-openjdk-17-slim AS build
+WORKDIR /app
+COPY pom.xml .
+COPY identity-service/pom.xml identity-service/
+COPY candidate-service/pom.xml candidate-service/
+COPY employer-service/pom.xml employer-service/
+COPY job-service/pom.xml job-service/
+COPY application-service/pom.xml application-service/
+COPY document-service/pom.xml document-service/
+COPY api-gateway/pom.xml api-gateway/
+
+# We need the specific module name as a build arg
+ARG SERVICE_NAME
+WORKDIR /app/${SERVICE_NAME}
+COPY ${SERVICE_NAME}/src ./src
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17-slim
+ARG SERVICE_NAME
+WORKDIR /app
+COPY --from=build /app/${SERVICE_NAME}/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
