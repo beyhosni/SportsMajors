@@ -35,6 +35,18 @@
     </dependency>
   </dependencies>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>2024.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <modules>
     <module>identity-service</module>
     <module>candidate-service</module>
@@ -43,6 +55,7 @@
     <module>application-service</module>
     <module>document-service</module>
     <module>api-gateway</module>
+    <module>discovery-service</module>
   </modules>
 
   <build>

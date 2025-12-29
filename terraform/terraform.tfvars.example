@@ -1,0 +1,5 @@
+project_name = "sportsmajors"
+aws_region   = "us-east-1"
+db_name      = "sportsmajors"
+db_username  = "dbadmin"
+db_password  = "REPLACE_WITH_SECURE_PASSWORD"
