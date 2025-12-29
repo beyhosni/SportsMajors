@@ -101,6 +101,35 @@ terraform apply
 
 ---
 
+## ☕ Backend Development (Java & Spring)
+
+### Prerequisites
+- Java 17 (Azul Zulu or Oracle JDK)
+- Maven 3.8+
+
+### Build Instructions
+To build the entire backend architecture:
+```bash
+cd backend
+mvn clean install -DskipTests
+```
+
+### Core Frameworks & Patterns
+- **Spring Boot 3.4**: Foundation for all microservices.
+- **Spring Cloud 2024 (Eureka)**: Decentralized service discovery.
+- **Spring Data JPA & Flyway**: Version-controlled schema migrations and robust data access.
+- **Spring Security + JWT**: Centralized stateless authentication and RBAC.
+- **Lombok & MapStruct**: Boilerplate reduction and efficient DTO/Entity mapping.
+- **SpringDoc OpenAPI**: Automatic Swagger UI generation for API documentation.
+
+### Running Services Individually
+If you want to run a specific service without Docker:
+1. Ensure a PostgreSQL instance is running on port `5432`.
+2. Start the `discovery-service` first.
+3. Use the Maven wrapper or your IDE to run the `main` class of the desired service.
+
+---
+
 ## 📂 Project Structure
 ```text
 SportsMajors/
