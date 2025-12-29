@@ -23,8 +23,9 @@ graph TD
         API_Client[Axios + TanStack Query]
     end
 
-    subgraph "API Gateway (Spring Cloud Gateway)"
-        GW[Routing / Auth Header Bridge]
+    subgraph "Gateway & Discovery"
+        GW[API Gateway - Spring Cloud Gateway]
+        SD[Discovery - Netflix Eureka]
     end
 
     subgraph "Backend Services (Java 17 / Spring Boot 3)"
@@ -44,12 +45,9 @@ graph TD
 
     UI --> API_Client
     API_Client --> GW
-    GW --> Auth
-    GW --> Candidate
-    GW --> Employer
-    GW --> Jobs
-    GW --> App
-    GW --> Docs
+    GW --> SD
+    SD -.-> Auth & Candidate & Employer & Jobs & App & Docs
+    GW --> Auth & Candidate & Employer & Jobs & App & Docs
 
     Auth & Candidate & Employer & Jobs & App --> DB
     Docs --> S3
@@ -62,12 +60,13 @@ graph TD
 | Layer | Tech | Description |
 | :--- | :--- | :--- |
 | **Frontend** | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white) | React App Router, TypeScript, TailwindCSS, shadcn/ui |
-| **Logic** | ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white) | Java 17, Modular Monolith architecture |
+| **Microservices** | ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white) | Java 17, Spring Boot 3 |
+| **Infrastructure** | ![Spring Cloud](https://img.shields.io/badge/Spring_Cloud-6DB33F?style=flat&logo=spring&logoColor=white) | Eureka (Discovery), API Gateway |
 | **Security** | ![JWT](https://img.shields.io/badge/JWT-black?style=flat&logo=json-web-tokens) | Stateless Auth with HttpOnly Cookies |
 | **Database** | ![Postgres](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white) | Primary relational store with Flyway migrations |
-| **Caching** | ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat&logo=redis&logoColor=white) | Rate limiting and session management |
-| **Storage** | ![AWS S3](https://img.shields.io/badge/S3-569A31?style=flat&logo=amazons3&logoColor=white) | LocalStack for simulated document storage |
-| **DevOps** | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white) | Multi-stage builds for every service |
+| **Storage** | ![AWS S3](https://img.shields.io/badge/S3-569A31?style=flat&logo=amazons3&logoColor=white) | LocalStack (Dev) / AWS S3 (Prod) |
+| **DevOps** | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white) | Multi-stage builds, Docker Compose |
+| **IaC** | ![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white) | AWS Infrastructure provisioning |
 
 ---
 
@@ -75,42 +74,57 @@ graph TD
 
 ### Prerequisites
 - [Docker & Docker Compose](https://www.docker.com/)
+- [Terraform](https://www.terraform.io/) (for cloud deployment)
 - [Postman](https://www.postman.com/) (to use the provided collection)
 
-### Quick Launch
+### Local Launch (Docker)
 ```bash
 docker-compose up --build
 ```
-*Wait for the services to initialize. Flyway will automatically create the database schema.*
+*Wait for the services to initialize. All services will automatically register with Eureka.*
+
+### Cloud Launch (Terraform)
+1. Navigate to `terraform/`.
+2. Copy `terraform.tfvars.example` to `terraform.tfvars` and configure your AWS credentials.
+3. Initialize and deploy:
+```bash
+terraform init
+terraform plan
+terraform apply
+```
 
 ### URLs
-- **Frontend Layer**: `http://localhost:3000`
-- **Entry Gateway**: `http://localhost:8080/api`
-- **Swagger Documentation**: `http://localhost:8081/swagger-ui.html` (Identity), `http://localhost:8082/...`
+- **Frontend**: `http://localhost:3000`
+- **API Gateway**: `http://localhost:8080/api/...`
+- **Eureka Dashboard**: `http://localhost:8761`
+- **Swagger Docs**: Available on each service port (e.g., `8081`, `8082`)
 
 ---
 
 ## 📂 Project Structure
 ```text
 SportsMajors/
-├── backend/            # Modular Monolith Root
+├── backend/            # Spring Boot Microservices
 │   ├── api-gateway/    # Entry point & Routing
-│   ├── identity/       # JWT Auth & Security
-│   ├── candidate/      # Athlete Profile Management
-│   ├── employer/       # Organization Management
-│   ├── job/            # Job Board & Search Logic
-│   ├── application/    # Workflow Tracking
-│   └── document/       # S3 Upload logic
+│   ├── discovery-service/ # Eureka Service Discovery
+│   ├── identity-service/  # JWT Auth & Security
+│   ├── candidate-service/ # Athlete Profile Management
+│   ├── employer-service/  # Organization Management
+│   ├── job-service/       # Job Board & Search Logic
+│   ├── application-service/ # Workflow Tracking
+│   └── document-service/  # S3 Upload logic
 ├── frontend/           # Next.js Application
-├── docker-compose.yml  # Full Stack Orchestration
+├── terraform/          # AWS IaC (VPC, ECS, RDS, S3)
+├── docker-compose.yml  # Local Orchestration
 └── SportsMajors_API_Collection.json # Postman Testing
 ```
 
 ---
 
 ## 🛡️ Key Features implemented in MVP
-- ✅ **Stateless Authentication**: High-security cookies across micro-modules.
-- ✅ **Modular Mono Architecture**: Scalable services communicating via a gateway.
+- ✅ **Infrastructure**: Service Discovery (Eureka) and API Gateway.
+- ✅ **Cloud Ready**: Complete Terraform scripts for AWS (ECS Fargate, RDS).
+- ✅ **Stateless Authentication**: High-security cookies across micro-services.
 - ✅ **Dynamic Job Search**: Search by sport type, location, and OPT status.
 - ✅ **Developer Experience**: Root `.gitignore`, Swagger UI, and Postman Ready.
 
