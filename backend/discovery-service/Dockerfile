@@ -1,13 +1,5 @@
-FROM maven:3.8.4-openjdk-17-slim AS build
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY pom.xml .
-COPY discovery-service/pom.xml discovery-service/
-RUN mvn -pl discovery-service dependency:go-offline
-COPY discovery-service/src discovery-service/src
-RUN mvn -pl discovery-service clean package -DskipTests
-
-FROM openjdk:17-slim
-WORKDIR /app
-COPY --from=build /app/discovery-service/target/*.jar app.jar
+COPY discovery-service/target/*.jar app.jar
 EXPOSE 8761
 ENTRYPOINT ["java", "-jar", "app.jar"]

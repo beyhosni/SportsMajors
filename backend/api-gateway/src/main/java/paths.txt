@@ -1,0 +1,5 @@
+C:\Users\33656\Documents\Workspace\SportsMajors\backend\api-gateway\src\main\java\com
+C:\Users\33656\Documents\Workspace\SportsMajors\backend\api-gateway\src\main\java\paths.txt
+C:\Users\33656\Documents\Workspace\SportsMajors\backend\api-gateway\src\main\java\com\sportsmajors
+C:\Users\33656\Documents\Workspace\SportsMajors\backend\api-gateway\src\main\java\com\sportsmajors\gateway
+C:\Users\33656\Documents\Workspace\SportsMajors\backend\api-gateway\src\main\java\com\sportsmajors\gateway\GatewayApplication.java

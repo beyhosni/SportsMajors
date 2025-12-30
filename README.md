@@ -151,8 +151,13 @@ SportsMajors/
 ---
 
 ## 🛡️ Key Features implemented in MVP
-- ✅ **Infrastructure**: Service Discovery (Eureka) and API Gateway.
-- ✅ **Cloud Ready**: Complete Terraform scripts for AWS (ECS Fargate, RDS).
+- ✅ **Infrastructure**:- **Service Discovery**: Eureka server for dynamic routing.
+- **Dynamic Gateway**: Centralized entry point with service-discovery based routing.
+- **Cloud Readiness**: Infrastructure-as-Code with Terraform (AWS VPC, ECS, RDS, S3).
+- **Premium UI & 3D Animations**: Immersive user experience with `Three.js` and `Framer Motion`:
+    - Floating 3D Hero background.
+    - Interactive 3D tilt effects on job cards.
+    - Smooth page transitions and glassmorphism design.
 - ✅ **Stateless Authentication**: High-security cookies across micro-services.
 - ✅ **Dynamic Job Search**: Search by sport type, location, and OPT status.
 - ✅ **Developer Experience**: Root `.gitignore`, Swagger UI, and Postman Ready.
